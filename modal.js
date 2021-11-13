@@ -145,27 +145,6 @@ function testEmail(){
 
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
-  Nombre de tournois
-▰▰▰▰▰▰▰▰▰▰▰▰
- */
-
-function testQuantity(){
-
-  let formQuantity = document.getElementById("quantity");
-  if(formQuantity.value === ''){
-    alert("Veuillez remplir le champ du nombre de tounoi")
-    console.log()
-    return false;
-
-  }
-  else{
-    console.log('quantity ok')
-    return true;
-  }
-}
-
-/*
-▰▰▰▰▰▰▰▰▰▰▰▰
   Date de naissance
 ▰▰▰▰▰▰▰▰▰▰▰▰
  */
@@ -187,18 +166,39 @@ function testBirthdate(){
 
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
+  Nombre de tournois
+▰▰▰▰▰▰▰▰▰▰▰▰
+ */
+
+function testQuantity(){
+
+  let formQuantity = document.getElementById("quantity");
+  if(formQuantity.value === ''){
+    alert("Veuillez remplir le champ du nombre de tounoi")
+    console.log()
+    return false;
+
+  }
+  else{
+    console.log('quantity ok')
+    return true;
+  }
+}
+
+/*
+▰▰▰▰▰▰▰▰▰▰▰▰
   Villes
 ▰▰▰▰▰▰▰▰▰▰▰▰
  */
 
 function testCities(){
-  let radios = document.querySelectorAll('input[name="location"]:checked');
-  if(radios[0] != null){
-    console.log('radio button checked');
+  let radios = document.querySelector('input[name="location"]:checked');
+  if(radios != null){
+    console.log('checkbox button checked');
     return true;
   }
   else{
-    console.log('rien de sélectionné')
+    alert('Veuillez sélectionner la ou les villes');
     return false;
   }
 }
