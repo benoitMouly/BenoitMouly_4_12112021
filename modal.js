@@ -58,7 +58,7 @@ function checker(e){
   e.preventDefault();
   if(testNames() && testEmail() && testBirthdate() && testQuantity() && testCities() && testCGU()){
     content[0].style.background = 'green';
-    document.getElementById('buttonSubmit').value="Votre demande a bien été prise en compte";
+    document.getElementById('buttonSubmit').value="Envoyé !";
     submitForm.style.background = "green";
     return true;
   }
