@@ -7,24 +7,30 @@ function editNav() {
   }
 }
 
+
 // DOM Elements
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
-let crossButton = document.querySelectorAll('.close');
+const crossButton = document.querySelectorAll('.close'); // !
 
 // FORM Elements
-let form = document.querySelectorAll('formData');
-let firstname = document.getElementById('first');
-let lastname = document.getElementById('last');
-let email = document.getElementById('email');
-let birthdate = document.getElementById('birthdate');
-let quantity = document.getElementById('quantity');
-let cities = document.querySelectorAll('location');
-let cgu = document.getElementById('checkbox1');
-let newsletter = document.getElementById('checkbox2');
-let submitForm = document.getElementById('buttonSubmit');
-let content = document.querySelectorAll('.content');
+const form = document.querySelectorAll('formData');
+const firstname = document.getElementById('first');
+const lastname = document.getElementById('last');
+const email = document.getElementById('email');
+const birthdate = document.getElementById('birthdate');
+const quantity = document.getElementById('quantity');
+const cities = document.querySelectorAll('location');
+const cgu = document.getElementById('checkbox1');
+const newsletter = document.getElementById('checkbox2');
+const submitForm = document.getElementById('buttonSubmit');
+const closeMe = document.getElementsByClassName('closeme');
+const content = document.querySelectorAll('.content');
+const confirmedMsg = document.getElementById('msg');
+const confirmedBtn = document.getElementById('zebutton');
+const modalBody = document.querySelectorAll('.modal-body');
+const textControl = document.querySelectorAll('.text-control')
 
 
 // launch modal event
@@ -38,6 +44,7 @@ function launchModal() {
   modalbg.style.display = "block";
 }
 
+
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
   Close modal form
@@ -48,6 +55,7 @@ function closeModal(){
   modalbg.style.display = "none";
 }
 
+
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
   Checker
@@ -55,18 +63,27 @@ function closeModal(){
  */
 
 function checker(e){
-  e.preventDefault();
-  if(testNames() && testEmail() && testBirthdate() && testQuantity() && testCities() && testCGU()){
-    content[0].style.background = 'green';
-    document.getElementById('buttonSubmit').value="Envoyé !";
-    submitForm.style.background = "green";
+  // e.preventDefault();
+
+  if(testNames() && testEmail() && testBirthdate() && testQuantity() && testCities() && testCGU()){ // SI tout est true on envoi les données
+    const changeIt = document.getElementById('buttonSubmit');
+    const closeIt = document.getElementById('buttonKlose');
+    const content = document.querySelectorAll('.content')
+    modalBody[0].style.display = 'none'; // On retire le formulaire
+    confirmedBtn.style.display = "block"; // le button Close est ajouté
+    confirmedMsg.style.display = "block"; // Le message de confirmation est ajouté
+    content[0].style.height = "100%"; // On set la hauteur maximal pour garder les dimensions de la box d'origine
+    changeIt.style.display = "none"; // Le boutton d'envoi est masqué
+
+    closeIt.addEventListener('click', closeModal) // Et enfin, on ajoute l'event sur le button Close
     return true;
   }
   else{
-    e.preventDefault();
+    e.preventDefault(); // Sinon, on envoi pas les données
   }
 
 }
+
 
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
@@ -75,50 +92,57 @@ function checker(e){
  */
 
 function testNames(){
-  let formNameFill = document.getElementById("first").value;
-  let formLastNameFill = document.getElementById("last").value;
-  let regName = /^[a-zA-Z ,.'-]+$/
 
-  let nameResult = regName.test(formNameFill);
-  let lastNameResult = regName.test(formLastNameFill);
+  const prenomError = document.getElementById('prenomError');
+  const nomError = document.getElementById('nomError');
+  const formNameFill = document.getElementById("first").value;
+  const formLastNameFill = document.getElementById("last").value;
+  const regName = /^[a-zA-Z ,.'-]+$/
 
-  let nameLength = formNameFill.length;
-  let lastLength = formLastNameFill.length;
-  console.log(nameLength);
+  const nameResult = regName.test(formNameFill);
+  const lastNameResult = regName.test(formLastNameFill);
+
+  const nameLength = formNameFill.length;
+  const lastLength = formLastNameFill.length;
+
+  // ✧ Le champ est vide ✧
 
   if(nameResult == false){
-    alert("Erreur dans le champ prénom");
-    console.log(nameResult);
-    firstname.style.background = "red";
-    return false; 
+
+    firstname.style.borderColor = "red";
+    prenomError.style.display = "block"; // on affiche l'erreur (comme il y'a un false, le formulaire n'est pas envoyé)
+    textControl.style.border = " thin dotted red";
+
+    return false;
   }
 
   if(lastNameResult == false){
-    alert("Erreur dans le champ nom");
-    console.log(lastNameResult);
-    lastname.style.background = "red";
+
+    lastname.style.borderColor = "red";
+    nomError.style.display = "block";
+
     return false; 
   }
 
-  if(nameLength <= 1){
-    alert("Vérifiez le nombre de lettre dans les champs prénoms / noms ");
-    firstname.style.background = "red";
-    console.log(formNameFill);
+  // ✧ Le champ n'a pas suffisamment de lettres  ✧
+
+  if(nameLength < 2){
+    firstname.style.borderColor = "red";
+    prenomError.style.display = "block";
     return false;
   }
-  else if(lastLength <= 1){
-    alert('lastName : vérifiez le nombre de charactères');
-    lastname.style.background = "red";
+  else if(lastLength < 2){
+    nomError.style.display = "block";
     return false;
   }
 
   else{
-    console.log('le prenom et nom sont bons');
-    firstname.style.background = "green";
-    lastname.style.background = "green";
+    firstname.style.borderColor = "white";
+    nomError.style.display = "none";
     return true;
   }
 }
+
 
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
@@ -127,21 +151,24 @@ function testNames(){
  */
 
 function testEmail(){
-  let formEmailFill = document.getElementById("email").value;
-  let formEmailPattern = /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
-  let emailResult = formEmailPattern.test(formEmailFill)
+  const emailError = document.getElementById('emailError');
+  const formEmailFill = document.getElementById("email").value;
+  const formEmailPattern = /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
+  const emailResult = formEmailPattern.test(formEmailFill)
   
+  // ✧ Le champ est vide ✧
+
   if(emailResult == false){
-    alert("Il y a un soucis du côté de l'email");
-    console.log(formEmailFill);
+
+    emailError.style.display = "block";
     return false;
   }
 
   else{
-    console.log("email ok");
     return true;
   }
 }
+
 
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
@@ -151,18 +178,21 @@ function testEmail(){
 
 function testBirthdate(){
 
-  let dates = document.querySelector('input[type="date"]');
+  const birthError = document.getElementById('birthError')
+  const dates = document.querySelector('input[type="date"]');
+
+  // ✧ Le champ est vide et n'est pas nombre ✧
+
   if(dates.value === ''){
-    alert('Ajoutez votre date de naissance');
-    console.log('Ajoutez votre date de naissance');
+    birthError.style.display = "block";
     return false;
   }
   else{
-    console.log('date de naissance ok');
     return true;
   }
 
 }
+
 
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
@@ -171,19 +201,21 @@ function testBirthdate(){
  */
 
 function testQuantity(){
+  const numberError = document.getElementById('numberError')
+  const formQuantity = document.getElementById("quantity");
 
-  let formQuantity = document.getElementById("quantity");
+  // ✧ Le champ est vide et n'est pas un nombre ✧
+
   if(formQuantity.value === ''){
-    alert("Veuillez remplir le champ du nombre de tounoi")
-    console.log()
+    numberError.style.display = "block";
     return false;
 
   }
   else{
-    console.log('quantity ok')
     return true;
   }
 }
+
 
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
@@ -192,16 +224,20 @@ function testQuantity(){
  */
 
 function testCities(){
-  let radios = document.querySelector('input[name="location"]:checked');
+  const checkboxError = document.getElementById('cityError');
+  const radios = document.querySelector('input[name="location"]:checked');
+
+  // ✧ Une checkbox est bien sélectionnée ✧
+
   if(radios != null){
-    console.log('checkbox button checked');
     return true;
   }
   else{
-    alert('Veuillez sélectionner la ou les villes');
+    checkboxError.style.display = "block";
     return false;
   }
 }
+
 
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
@@ -210,14 +246,18 @@ function testCities(){
  */
 
 function testCGU(){
-  let cgu = document.querySelector('input[name="cgu"]:checked');
-  console.log(cgu);
+
+  const cguError = document.getElementById('cguError');
+  const cgu = document.querySelector('input[name="cgu"]:checked');
+
+  // ✧ Une checkbox est bien sélectionnée ✧
   if(cgu != null){
-    console.log('CGU acceptée');
+    cguError.style.display = " none ";
     return true;
   }
+
   else{
-    alert('Veuillez accepter les CGU');
+    cguError.style.display = " block ";
     return false;
   }
 }
@@ -228,4 +268,9 @@ function testCGU(){
 ▰▰▰▰▰▰▰▰▰▰▰▰
  */
 
-submitForm.addEventListener('click', checker);
+// ✧ Ajout de la fonction au bouton checker ✧
+
+submitForm.addEventListener('click', checker)
+
+
+
