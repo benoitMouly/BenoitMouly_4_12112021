@@ -33,6 +33,7 @@ const modalBody = document.querySelectorAll('.modal-body');
 const textControl = document.querySelectorAll('.text-control')
 
 
+
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
@@ -80,10 +81,10 @@ function checker(e){
   }
   else{
     e.preventDefault(); // Sinon, on envoi pas les données
+
   }
 
 }
-
 
 /*
 ▰▰▰▰▰▰▰▰▰▰▰▰
@@ -92,7 +93,7 @@ function checker(e){
  */
 
 function testNames(){
-
+  
   const prenomError = document.getElementById('prenomError');
   const nomError = document.getElementById('nomError');
   const formNameFill = document.getElementById("first").value;
@@ -111,7 +112,7 @@ function testNames(){
 
     firstname.style.borderColor = "red";
     prenomError.style.display = "block"; // on affiche l'erreur (comme il y'a un false, le formulaire n'est pas envoyé)
-    textControl.style.border = " thin dotted red";
+    textControl[0].style.border = " thin dotted red";
 
     return false;
   }
@@ -120,6 +121,7 @@ function testNames(){
 
     lastname.style.borderColor = "red";
     nomError.style.display = "block";
+    textControl[0].style.border = " thin dotted red";
 
     return false; 
   }
@@ -132,12 +134,24 @@ function testNames(){
     return false;
   }
   else if(lastLength < 2){
+    lastname.style.borderColor = "red";
     nomError.style.display = "block";
     return false;
   }
 
+  else if(nameResult == true && lastNameResult == false){
+    firstname.style.borderColor = "white";
+    prenomError.style.display = "none";
+  }
+  else if(lastNameResult == true && nameResult == false){
+    lastname.style.borderColor = "white";
+    nomError.style.display = "none";
+  }
+
   else{
     firstname.style.borderColor = "white";
+    prenomError.style.display = "none";
+    lastname.style.borderColor = "white";
     nomError.style.display = "none";
     return true;
   }
@@ -154,17 +168,19 @@ function testEmail(){
   const emailError = document.getElementById('emailError');
   const formEmailFill = document.getElementById("email").value;
   const formEmailPattern = /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
-  const emailResult = formEmailPattern.test(formEmailFill)
+  const emailResult = formEmailPattern.test(formEmailFill);
   
   // ✧ Le champ est vide ✧
 
   if(emailResult == false){
 
     emailError.style.display = "block";
+    textControl[0].style.border = " thin dotted red";
     return false;
   }
 
   else{
+    emailError.style.display = "none";
     return true;
   }
 }
@@ -178,7 +194,7 @@ function testEmail(){
 
 function testBirthdate(){
 
-  const birthError = document.getElementById('birthError')
+  const birthError = document.getElementById('birthError');
   const dates = document.querySelector('input[type="date"]');
 
   // ✧ Le champ est vide et n'est pas nombre ✧
@@ -188,6 +204,8 @@ function testBirthdate(){
     return false;
   }
   else{
+    birthError.style.display = "none";
+    textControl[0].style.border = " thin dotted red";
     return true;
   }
 
@@ -201,17 +219,21 @@ function testBirthdate(){
  */
 
 function testQuantity(){
-  const numberError = document.getElementById('numberError')
-  const formQuantity = document.getElementById("quantity");
+  const numberError = document.getElementById('numberError');
+  const formQuantity = document.getElementById("quantity").value;
+  const formQuantityPattern = /^[0-99]*$/; // Match avec des valeurs comprises entre 0 et 99
+  const quantityResult = formQuantityPattern.test(formQuantity);
 
-  // ✧ Le champ est vide et n'est pas un nombre ✧
+  // ✧ Le champ est vide et ne match pas avec le regex ✧
 
-  if(formQuantity.value === ''){
+  if(quantityResult == false || formQuantity === ''){
     numberError.style.display = "block";
     return false;
 
   }
   else{
+    numberError.style.display = "none";
+    textControl[0].style.border = " thin dotted red";
     return true;
   }
 }
@@ -226,16 +248,23 @@ function testQuantity(){
 function testCities(){
   const checkboxError = document.getElementById('cityError');
   const radios = document.querySelector('input[name="location"]:checked');
+  const formQuantities = document.getElementById("quantity").value;
 
   // ✧ Une checkbox est bien sélectionnée ✧
 
   if(radios != null){
+    checkboxError.style.display = "none";
     return true;
   }
-  else{
+  else if( radios == null && formQuantities > 0){
     checkboxError.style.display = "block";
     return false;
   }
+  else{
+    checkboxError.style.display = "none";
+    return true;
+  }
+
 }
 
 
@@ -274,3 +303,22 @@ submitForm.addEventListener('click', checker)
 
 
 
+  /*
+▰▰▰▰▰▰▰▰▰▰▰▰
+  Charge errors
+▰▰▰▰▰▰▰▰▰▰▰▰
+ */
+const prenomCheck = document.getElementById('first');
+const nomCheck = document.getElementById('last');
+const emailCheck = document.getElementById('email');
+const birthCheck = document.getElementById('birthdate');
+const numberCheck = document.getElementById('quantity');
+const locationCheck = document.querySelector('input[name="location"]');
+
+
+prenomCheck.addEventListener("change", testNames);
+nomCheck.addEventListener("change", testNames);
+emailCheck.addEventListener("change", testEmail);
+birthCheck.addEventListener("change", testBirthdate);
+numberCheck.addEventListener("change", testQuantity);
+locationCheck.addEventListener("change", testCities);
